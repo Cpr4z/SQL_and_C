@@ -11,19 +11,20 @@ int main() {
 	int i = 0;
 
 	// Получаем дескриптор соединения
-	mysql_init(&mysql);
+	mysql_init(&mysql);//функция mysql_init(MYSQL *mysql) выделяет память и инициализирует дескриптор mysql для вызова функции mysql_real_connect()
 	if (&mysql == nullptr) {
 		// Если дескриптор не получен — выводим сообщение об ошибке
 		cout << "Error: can't create MySQL-descriptor" << endl;
 	}
 
 	// Подключаемся к серверу
-	if (!mysql_real_connect(&mysql, "localhost", "root", "root", "testdb", NULL, NULL, 0)) {
+	if (!mysql_real_connect(&mysql, "localhost", "root", "root", "testdb", NULL, NULL, 0)) {//MYSQL *mysql_real_connect (MYSQL *mysql, const char *host, const char *user, const char *passwd, const char *db, unsigned int port, const char *unix_socket, unsigned int client_flag) 
+	функция устанавливает соединение с базой данных MySQL, работающей на хосте host.
 		// Если нет возможности установить соединение с БД выводим сообщение об ошибке
-		cout << "Error: can't connect to database " << mysql_error(&mysql) << endl;
+		cout << "Error: can't connect to database " << mysql_error(&mysql) << endl;//mysql_error(MYSQL* mysql) возвращает сообщение об ошибке для последней запущенной функции MySQL.
 	}
 
-	mysql_query(&mysql, "CREATE TABLE table_fromCplusplus(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))");
+	mysql_query(&mysql, "CREATE TABLE table_fromCplusplus(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))");//mysql_query(MYSQL *mysql, const char *query) выполняет запрос SQL, указанный в аргументе query в виде строки с нулевыми окончаниями.
 	mysql_query(&mysql, "INSERT INTO table_fromCplusplus(id, name) values(default, 'Daria')");
 	mysql_query(&mysql, "INSERT INTO table_fromCplusplus(id, name) values(default, 'Lida')");
 	mysql_query(&mysql, "INSERT INTO table_fromCplusplus(id, name) values(default, 'Nastya')");
@@ -32,8 +33,8 @@ int main() {
 	mysql_query(&mysql, "SELECT * FROM table_fromCplusplus"); //Делаем запрос к таблице
 
 	//Выводим все что есть в таблице через цикл
-	if (res = mysql_store_result(&mysql)) {
-		while (row = mysql_fetch_row(res)) {
+	if (res = mysql_store_result(&mysql)) {   //mysql_store_result(MYSQL *mysql)эту функцию необходимо вызывать после каждого выполненного запроса, извлекающего данные из базы данных (SELECT, SHOW, DESCRIBE, EXPLAIN). 
+		while (row = mysql_fetch_row(res)) {//mysql_fetch_row(MYSQL_RES *result) эта функция извлекает следующую строку в результирующем наборе данных.
 			for (i = 0; i < mysql_num_fields(res); i++) {
 				cout << row[i] << "  ";
 			}
